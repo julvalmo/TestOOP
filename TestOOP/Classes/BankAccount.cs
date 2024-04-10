@@ -28,10 +28,11 @@ namespace MiscClasses
         // Constructor
         public BankAccount(string name, decimal initialBalance)
         {
-            _allTransactions = initialBalance;
             this.Owner = name;
             Number = s_accountNumberSeed.ToString();
             s_accountNumberSeed++;
+
+            MakeDeposit(initialBalance, DateTime.Now, "Initial balance");
         }
 
         List<Transaction> _allTransactions = new List<Transaction>();
