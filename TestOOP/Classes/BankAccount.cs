@@ -60,5 +60,13 @@ namespace MiscClasses
             var withdrawal = new Transaction(-amount, date, note);
             _allTransactions.Add(withdrawal);
         }
+
+        public void Get_allTransactions()
+        {
+            foreach (var transaction in _allTransactions)
+            {
+                Console.WriteLine($"Account {this.Number} from {this.Owner} - {transaction.Notes} @ {transaction.Date}");
+            }
+        }
     }
 }
