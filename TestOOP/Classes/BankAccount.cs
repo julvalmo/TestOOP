@@ -45,6 +45,9 @@ namespace MiscClasses
             }
             var deposit = new Transaction(amount, date, note);
             _allTransactions.Add(deposit);
+            // update balance after newly done transaction
+            // TODO do something to do this automatically
+            deposit.UpdateCurrentBalancaAfterTransaction(this.Balance);
         }
 
         public void MakeWithdrawal(decimal amount, DateTime date, string note)
@@ -59,14 +62,20 @@ namespace MiscClasses
             }
             var withdrawal = new Transaction(-amount, date, note);
             _allTransactions.Add(withdrawal);
+            // update balance after newly done transaction
+            // TODO do something to do this automatically
+            withdrawal.UpdateCurrentBalancaAfterTransaction(this.Balance);
         }
 
         public void Get_allTransactions()
         {
+            Console.WriteLine("-----------------------------------------------------------------");
             foreach (var transaction in _allTransactions)
             {
-                Console.WriteLine($"Account {this.Number} from {this.Owner} - {transaction.Notes} @ {transaction.Date}");
+                Console.WriteLine($"Account {this.Number} from {this.Owner} - {(transaction.Amount < 0 ? "Widthdrawal" : "Deposit")} of USD ${transaction.Amount}\n\t{transaction.Notes} @ {transaction.Date}" +
+                    $"\n\tFinal Balance: {transaction.CurrentBalance}\n");
             }
+            Console.WriteLine("-----------------------------------------------------------------\n");
         }
     }
 }
