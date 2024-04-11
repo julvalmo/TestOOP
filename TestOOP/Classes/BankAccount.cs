@@ -9,6 +9,7 @@ namespace MiscClasses
     public class BankAccount
     {
         private static int s_accountNumberSeed = 1234567890;
+        private readonly decimal _minimumBalance;
         public string Number { get; }
         public string Owner { get; set; }
         public decimal Balance
@@ -24,15 +25,20 @@ namespace MiscClasses
                 return balance;
             }
         }
+        public BankAccount(string name, decimal initialBalance) : this(name, initialBalance, 0) { }
 
         // Constructor
-        public BankAccount(string name, decimal initialBalance)
+        public BankAccount(string name, decimal initialBalance, decimal minimumBalance)
         {
             this.Owner = name;
             Number = s_accountNumberSeed.ToString();
             s_accountNumberSeed++;
 
-            MakeDeposit(initialBalance, DateTime.Now, "Initial balance");
+            _minimumBalance = minimumBalance;
+            if (initialBalance > 0)
+            {
+                MakeDeposit(initialBalance, DateTime.Now, "Initial balance");
+            }
         }
 
         List<Transaction> _allTransactions = new List<Transaction>();
@@ -47,7 +53,7 @@ namespace MiscClasses
             _allTransactions.Add(deposit);
             // update balance after newly done transaction
             // TODO do something to do this automatically
-            deposit.UpdateCurrentBalancaAfterTransaction(this.Balance);
+            deposit.UpdateCurrentBalanceAfterTransaction(this.Balance);
         }
 
         public void MakeWithdrawal(decimal amount, DateTime date, string note)
@@ -56,7 +62,8 @@ namespace MiscClasses
             {
                 throw new ArgumentOutOfRangeException(nameof(amount), "Amount of withdrawal must be positive");
             }
-            if (Balance - amount < 0)
+            // TODO check how this works with the old hardcoded 0 vs the _minimumBalance prop
+            if (Balance - amount < _minimumBalance)
             {
                 throw new InvalidOperationException("Not sufficient funds for this withdrawal");
             }
@@ -64,7 +71,7 @@ namespace MiscClasses
             _allTransactions.Add(withdrawal);
             // update balance after newly done transaction
             // TODO do something to do this automatically
-            withdrawal.UpdateCurrentBalancaAfterTransaction(this.Balance);
+            withdrawal.UpdateCurrentBalanceAfterTransaction(this.Balance);
         }
 
         public void Get_allTransactions()
@@ -77,5 +84,12 @@ namespace MiscClasses
             }
             Console.WriteLine("-----------------------------------------------------------------\n");
         }
+
+        // for derived classes
+        public virtual void PerformMonthEndTransactions()
+        {
+        }
+
     }
+
 }

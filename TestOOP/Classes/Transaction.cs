@@ -15,7 +15,7 @@ public class Transaction
         Notes = note;
     }
 
-    public void UpdateCurrentBalancaAfterTransaction(decimal currentBalance)
+    public void UpdateCurrentBalanceAfterTransaction(decimal currentBalance)
     {
         CurrentBalance = currentBalance;
     }
